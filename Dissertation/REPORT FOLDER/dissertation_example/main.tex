@@ -1,0 +1,63 @@
+\documentclass[a4paper,11pt,nocenter,bold,notitlepage,noheadline,noindent]{thesis}
+
+%                     PACKAGES
+% Add any additional packages that you require to the list below
+%
+\usepackage{a4,graphicx,natbib,hyperref}
+\usepackage{longtable}
+
+%                     SPACING
+% This really shouldn't be necessary...
+%\renewcommand{\baselinestretch}{1.25}
+
+%                     DOCUMENT DETAILS
+% Edit these entries to fit your document
+%
+\title{A Motion Capture/ Detection Device for Skateboards using an Arduino 101}
+\author{Ryan Baker}
+\translator{\Large\bf BSc. Computer Science Dissertation} % don't ask ...
+\institution{Northumbria University \\ School of Computing, Engineering and Information Sciences}
+\date{April 2017}
+
+%                    DEDICATION (OPTIONAL)
+%
+\dedication{For my Mum, Dad, Sister and Dog}
+
+%                     INCLUDE ONLY
+% Use this if you want to process only a small part of the document
+%\includeonly{PROOFS/proofs}
+
+%                     DOCUMENT
+\begin{document}
+\frontmatter
+\maketitle
+\include{FRONT/abstract}
+\include{FRONT/declaration}
+\include{FRONT/acknowledgements}
+\tableofcontents
+\listoffigures
+\listoftables
+\mainmatter
+\include{INTRODUCTION/text}
+\include{ANALYSIS/text}
+\include{SYNTHESIS/text}
+\include{EVALUATION/text}
+\include{CONCLUSIONS/text}
+\appendix
+\include{TOR/text}
+\include{DEVELOPMENT/text}
+\include{CODE/text}
+% GLOSSARY -- include if you've used lots of technical terminology/notation
+% \include{glossary}
+\bibliographystyle{apalike}
+\bibliography{project}
+\end{document}
+
+
+
+
+
+
+
+
+
