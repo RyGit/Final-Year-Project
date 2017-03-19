@@ -49,7 +49,6 @@ public class Main
     private double [][] ollie;
     
     private double [][] dataTrain;
-    private double [][] idleState;
     
     //private File [] files;
     
@@ -61,10 +60,14 @@ public class Main
     //Counts used for number of times a trick has been performed. 
 
     private int manualCount;
+    private int noseManualCount;
     private int heelflipCount;
     private int kickflipCount;
-    private int noseManualCount;
+    private int ollieCount;
     private int popShuvitCount;
+    private int ollie180Count;
+    
+    private int performed180;
 
     
 
@@ -196,12 +199,6 @@ public class Main
     {
         
         loadDataFile(dataFile);
-        
-        idleState = new double[1][3];
-        idleState[0][0] = dataTrain[0][0];
-        idleState[0][1] = dataTrain[0][1];
-        idleState[0][2] = dataTrain[0][2];
-        
     
     }
     
@@ -223,7 +220,7 @@ public class Main
     public void checkForManual(){
         int count = 0;
         int highCount = 0;
-        double rollBound = dataTrain[0][0] - 30.00;
+        double rollBound = dataTrain[0][0] - 25.00;
         boolean manualState = false;
         
         for(int i = 0; i < dataTrain.length; i++)
@@ -236,23 +233,13 @@ public class Main
                 highCount++;
                 manualState = true;
             }
-            else{
-                
-            }
             
-            
-            if(highCount > 60)
+            if(manualState == true && highCount > 100 && roll > rollBound)
             {
                 manualState = false;
                 manualCount++;
                 highCount = 0;
                 count = 0;
-
-            }
-            else if(count > 100){
-                manualState = false;
-                count = 0;
-                highCount = 0;
             }
         }
         
@@ -265,7 +252,7 @@ public class Main
     public void checkForNoseManual(){
         int count = 0;
         int highCount = 0;
-        double rollBound = dataTrain[0][0] + 30.00;
+        double rollBound = dataTrain[0][0] + 25.00;
         boolean noseManualState = false;
         
         for(int i = 0; i < dataTrain.length; i++)
@@ -277,36 +264,82 @@ public class Main
             {
                 highCount++;
                 noseManualState = true;
-            
             }
-          
             
-            if(highCount > 60)
+            if(noseManualState == true && highCount > 100 && roll < rollBound)
             {
                 noseManualState = false;
                 noseManualCount++;
                 highCount = 0;
                 count = 0;
-
-            }
-            else if(count > 100){
-                noseManualState = false;
-                count = 0;
-                highCount = 0;
             }
         }
         
         System.out.println("Nose Manual Count is: " + noseManualCount);
-        //System.out.println("Count is: " + count);
-        //System.out.println("High Count is: " + highCount);
-
-        
         
     }
+    
+    public void checkForOllie(){
+        int count = 0;
+        double rollBound = dataTrain[0][0] - 30.00;
+        
+        for(int i = 0; i  < dataTrain.length; i++)
+        {
+            double roll = dataTrain[i][0];
+            
+            if(roll < rollBound)
+            {
+                count++;
+            }
+            
+            if(count > 5)
+            {
+                ollieCount++;
+                count = 0;
+            }
+            
+        }
+        
+        System.out.println("Ollie Count is :" + ollieCount);
+    }
+    
+    public void checkforOllie180(){
+        int count = 0;
+        double rollBound = dataTrain[0][0] + 35.00;
+        
+        double headingBound = dataTrain[0][2] - 100.00;
+        double headingBound180 = dataTrain[0][2] + 100.00;
+        
+        boolean phase1 = false;
+        
+        for(int i = 0; i < dataTrain.length; i++)
+        {
+            double roll = dataTrain[i][0];
+            double heading = dataTrain[i][2];
+            
+            if(roll > rollBound){
+                count++;
+                if(count > 5){
+                    phase1 = true;
+                }
+            }
+            
+            if(phase1 && heading < headingBound || heading > headingBound180){
+                performed180++;
+                phase1 = false;
+                count = 0;
+                ollie180Count++;
+                
+            }
+        }
+        
+        
+        System.out.println("Ollie 180 Count is: " + ollie180Count);
+    }
+    
 
     public void checkForHeelflip(){
         int count = 0;
-        //boolean kickflip = false;
         
         //Variables for Phase 1
         boolean phase1 = false;
@@ -316,8 +349,8 @@ public class Main
         
         //Variables for Phase 2
         boolean phase2 = false;
-        double phase2RollBound = dataTrain[0][0] - 50.00;
-        double phase2PitchBound = dataTrain[0][1] + 40.00;
+        double phase2RollBound = dataTrain[0][0] - 60.00;
+        double phase2PitchBound = dataTrain[0][1] + 50.00;
         int heelPhase2Count = 0;
 
         for(int i = 0; i < dataTrain.length; i++)
@@ -335,7 +368,7 @@ public class Main
             
             if(phase1){
                 count++;
-                if(count > 60){
+                if(count > 40){
                     count = 0;
                     heelPhase1Count = 0;
                     phase1 = false;
@@ -345,7 +378,7 @@ public class Main
             if(phase1 == true && pitch > phase2PitchBound){
                 heelPhase2Count++;
                 
-                if(heelPhase2Count > 5 && count < 60){
+                if(heelPhase2Count > 5 && count < 40){
                     heelPhase1Count = 0;
                     phase1 = false;
                     phase2 = true;
@@ -369,14 +402,10 @@ public class Main
         //System.out.println("Phase 2 Count: " + heelPhase2Count);
         //System.out.println("Count: " + count);
         System.out.println("Heelflip Count is: " + heelflipCount);
-
-
-        
     }
     
     public void checkForKickflip(){
         int count = 0;
-        //boolean kickflip = false;
         
         //Variables for Phase 1
         boolean phase1 = false;
@@ -404,23 +433,20 @@ public class Main
                 }
             }
             
-            
-            
             if(phase1){
                 count++;
-                if(count > 60){
+                if(count > 40){
                     count = 0;
-                    //kickPhase1Count = 0;
+                    kickPhase1Count = 0;
                     phase1 = false;
                 }
             }
-            
             
             if(phase1 == true && pitch < phase2PitchBound){
                 kickPhase2Count++;
                 
                 
-                if(kickPhase2Count > 5 && count < 60){
+                if(kickPhase2Count > 5 && count < 40){
                     kickPhase1Count = 0;
                     phase1 = false;
                     phase2 = true;
@@ -435,52 +461,46 @@ public class Main
             }
              
         }
-        
 
         //System.out.println("Count: " + count);
         //System.out.println("Phase 1 Count: " + kickPhase1Count);
         //System.out.println("Phase 2 Count: " + kickPhase2Count);
         System.out.println("Kickflip Count is: " + kickflipCount);
-        
     }
     
     public void checkForPopshuvit(){
-        
+        int count = 0;
         boolean phase1 = false;
-        double phase1HeadingBound = dataTrain[0][2] + 100.00;
-      
-        
-        boolean phase2 = false;
-        //double phase2PitchBound = dataTrain[0][1] - 40.00;
-        double phase2HeadingBound = dataTrain[0][2] - 100.00;
+        double headingBound = dataTrain[0][2] - 100.00;
+        double headingBound180 = dataTrain[0][2] + 100.00;
         
         for(int i = 0; i < dataTrain.length; i++)
         {
             double heading = dataTrain[i][2];
             
-            if(heading > phase1HeadingBound){
-                phase1 = true;
+            if(heading < headingBound || heading > headingBound180){
+                count++;
             }
             
-            if(heading < phase2HeadingBound && phase1 == true){
+            if(count > 70){
                 popShuvitCount++;
-                phase1 = false;
-                phase2 = false;
-                
+                count = 0;
             }
         }
-
-        System.out.println("Pop Shuv-It Count is: " + popShuvitCount);
-        
+        //System.out.println("Count is : " + count);
+        System.out.println("Pop Shuv-It Count is: " + popShuvitCount); 
     }
     
     public void searchForTricks(){
         
-        //checkForNoseManual();
+        checkForNoseManual();
         checkForHeelflip();
         checkForKickflip();
         checkForPopshuvit();
         checkForManual();
+        checkforOllie180();
+        checkForOllie();
+        
     }
     
     public void resetCounts(){
