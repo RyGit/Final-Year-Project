@@ -1,41 +1,69 @@
-\chapter{Some Design and Implementation Stuff}\label{device}
+\chapter{Synthesis}\label{synthesis}
 
-\section{Introduction}
-There will probably be more than one chapter of synthesis. None of
-which will be called `Synthesis'. This is the chapter where the
-reader is introduced to the design and/or implementation in a software
-development project. Your project may not fit this description and so
-you may not have a chapter like this.
+\section{Introduction}\label{introduction}
 
-\section{Design}
 
-Now we get down to the nitty-gritty\ldots
 
-\begin{table}[h]
-\begin{tabular}{|l|p{.3\textwidth}|r|}
+\section{Design}\label{design}
+
+\subsection{Overall System Design}\label{overallsystemdesign}
+
+\subsubsection{Position of Micro-controller on the Skateboard}\label{mcposition}
+
+\subsubsection{Arduino and the SD card module}\label{arduinoandsdcard}
+
+\subsection{Arduino Software Design}\label{arduinosoftwaredesign}
+
+\subsection{Mobile Application}\label{mobileapp}
+
+\subsection{Neural Net}\label{neural-net}
+
+\section{Implementation}\label{implementation}
+
+\subsection{Creating the initial software for the arduino board}\label{initalboardsoftware}
+
+\subsection{Analysis of initial data to identify patterns of tricks}\label{initialdatacapture}
+
+\subsection{Create Neural Network}\label{createneuralnet}
+
+\subsection{Bluetooth \& SD Card module implementation}\label{bluetoothsdcard}
+
+\subsection{Collect test data to run through system}\label{collecttestdata}
+
+\subsection{Bug fixing}\label{bugfixing}
+
+\section{Testing}\label{testing}
+
+\subsection{Testing Plan \& Method}\label{testplanmethod}
+
+\subsection{Test Case 1}\label{testcase1}
+
+Initial implementation of the trick identification system which should be able to detect 4 different tricks:
+
+\begin{enumerate}
+\item Kickflip
+\item Heelflip
+\item Pop Shuv-It
+\item Manual
+\end{enumerate}
+
+Below are the test results when running these 4 tricks through the system:
+
+\begin{longtable}{| p{.2\textwidth}|p{.3\textwidth}| p{.3\textwidth} | p{.2\textwidth}| p{.3\textwidth} |}[h]
+%\begin{tabular}
+Test Case & Expected Outcome & Actual Outcome & Result & Reason for Failure
 \hline
-\textbf{Heading 1} & \textbf{Heading 2} & \textbf{Heading 3} \\
-\hline \hline
-Some left-justified stuff &
-Some paragraph stuff Some paragraph
-stuff Some paragraph stuff Some paragraph
-stuff Some paragraph stuff Some
-paragraph stuff Some paragraph stuff
-Some paragraph stuff Some paragraph
-stuff Some paragraph stuff Some paragraph
-stuff Some paragraph stuff Some
-paragraph stuff Some paragraph stuff &
-Some right-justified stuff \\
-\hline
-Do it all again &
-Do it all again Do it all again Do it all
-again Do it all again Do it all again Do
-it all again &
-Do it all again \\
-\hline
-\end{tabular}
-\caption{Using the \texttt{tabular} environment\label{device:table}}
-\end{table}
+1 & \begin{enumerate}
+\item Kickflip x 2
+\item Heelflip x 1
+\item Pop Shuv-It x 2
+\item Manual x 4
+\end{enumerate}
+%\end{tabular}
+\end{longtable}
 
-Clearly, Tab.~\ref{device:table} provides a thoughtful summary of a
-large amount of information.
+\subsection{Test Case 2}\label{testcase2}
+
+\subsection{Test Case 3}\label{testcase3}
+
+\subsection{Test Case 4}\label{testcase4}

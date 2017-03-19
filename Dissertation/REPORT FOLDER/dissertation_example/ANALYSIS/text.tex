@@ -59,22 +59,14 @@ On the other hand, with time triggered events carrying the burden of high latenc
 
 In addition to this the very way I want my system to work is event triggered, if there is a sudden change in the values of any of the sensors then this must mean a trick has been performed at this point I will want to make sure that the tasks responsible for posting the data and sending it to the phone can run. In an event triggered system data is sent immediately using an interrupt mechanism whereas with time triggered systems there can be a delay based on the polling period of the TT system. [6] This reinforces my decision to develop an event triggered system, I will be able to send data off the mobile as soon as a trick is performed using a ISR and I will also reduce the latency within my software.
 
-\section{The Genuino 101}\label{anaylsis:genuino101}
+\section{Sourcing the Hardware}\label{anaylsis:sourcinghardware}
+
+\subsection{Bluetooth Low Energy}\label{anaylsis:bluetoothLE}
+
 \section{Neural Networks}\label{anaylsis:neuralnetwork}
 
-It relies on Fig.~\ref{methods:networkfig} to illustrate an essential
-concept. Another (better ?) approach to including graphics in a
-\LaTeX\ document is to put a TikZ/PGF~\citep{fau:11} program directly
-in the document.
+\subsection{Rule Based Nueral Networks}\label{anaylsis:ruledbasedNN}
 
-
-\section{More advanced stuff}\label{methods:moreadvanced}
-And here is some more such stuff which is on a sufficiently different
-topic to deserve a section of its own. This chapter may well contain
-the majority, although not all, of the
-references~\citep{abr:96,acd:92,al:97}. Consult a 
-reference such as \citep{lb:10} for information on how to include citations
-when using the Harvard referencing system.
 
 
 

@@ -49,6 +49,7 @@ public class Main
     private double [][] ollie;
     
     private double [][] dataTrain;
+    private double [][] idleState;
     
     //private File [] files;
     
@@ -195,6 +196,12 @@ public class Main
     {
         
         loadDataFile(dataFile);
+        
+        idleState = new double[1][3];
+        idleState[0][0] = dataTrain[0][0];
+        idleState[0][1] = dataTrain[0][1];
+        idleState[0][2] = dataTrain[0][2];
+        
     
     }
     
@@ -216,8 +223,7 @@ public class Main
     public void checkForManual(){
         int count = 0;
         int highCount = 0;
-        double rollBound = dataTrain[0][0] + 20.00;
-        double pitchBound = dataTrain[0][1] + 8.00;
+        double rollBound = dataTrain[0][0] - 30.00;
         boolean manualState = false;
         
         for(int i = 0; i < dataTrain.length; i++)
@@ -225,20 +231,17 @@ public class Main
             double roll = dataTrain[i][0];
             double pitch = dataTrain[i][1];
 
-            if(roll > rollBound && pitch > pitchBound)
+            if(roll < rollBound)
             {
                 highCount++;
                 manualState = true;
-            
+            }
+            else{
+                
             }
             
-            if(manualState){
-                count++;
-            }
             
-
-            
-            if(highCount > 60 && count < 100)
+            if(highCount > 60)
             {
                 manualState = false;
                 manualCount++;
@@ -260,10 +263,9 @@ public class Main
     }
     
     public void checkForNoseManual(){
-        
+        int count = 0;
         int highCount = 0;
-        double rollBound = dataTrain[0][0] - 10.00;
-        double pitchBound = dataTrain[0][1] - 5.00;
+        double rollBound = dataTrain[0][0] + 30.00;
         boolean noseManualState = false;
         
         for(int i = 0; i < dataTrain.length; i++)
@@ -271,30 +273,33 @@ public class Main
             double roll = dataTrain[i][0];
             double pitch = dataTrain[i][1];
 
-            if(roll > rollBound && pitch > pitchBound)
+            if(roll > rollBound)
             {
                 highCount++;
                 noseManualState = true;
-
-
             
             }
+          
             
             if(highCount > 60)
             {
-                if(roll < rollBound && pitch < pitchBound && noseManualState == true)
-                {
+                noseManualState = false;
+                noseManualCount++;
+                highCount = 0;
+                count = 0;
 
-                    noseManualState = false;
-                    noseManualCount++;
-                    highCount = 0;
-
-                }
-                        
+            }
+            else if(count > 100){
+                noseManualState = false;
+                count = 0;
+                highCount = 0;
             }
         }
         
         System.out.println("Nose Manual Count is: " + noseManualCount);
+        //System.out.println("Count is: " + count);
+        //System.out.println("High Count is: " + highCount);
+
         
         
     }
@@ -320,7 +325,7 @@ public class Main
             double roll = dataTrain[i][0];
             double pitch = dataTrain[i][1];
             
-            if(roll > phase1RollBound && pitch < phase1PitchBound){
+            if(pitch < phase1PitchBound){
                 heelPhase1Count++;
                 
                 if(heelPhase1Count > 5){
@@ -337,7 +342,7 @@ public class Main
                 }
             }
             
-            if(phase1 == true && roll < phase2RollBound && pitch > phase2PitchBound){
+            if(phase1 == true && pitch > phase2PitchBound){
                 heelPhase2Count++;
                 
                 if(heelPhase2Count > 5 && count < 60){
@@ -360,8 +365,8 @@ public class Main
             System.out.println("Phase 1 True");
         }
         
-        System.out.println("Phase 1 Count: " + heelPhase1Count);
-        System.out.println("Phase 2 Count: " + heelPhase2Count);
+        //System.out.println("Phase 1 Count: " + heelPhase1Count);
+        //System.out.println("Phase 2 Count: " + heelPhase2Count);
         //System.out.println("Count: " + count);
         System.out.println("Heelflip Count is: " + heelflipCount);
 
