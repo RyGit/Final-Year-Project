@@ -8,15 +8,88 @@
 
 \subsection{Overall System Design}\label{overallsystemdesign}
 
+An overall view of system which I have created can be seen below: 
+
+
+As you can see in the diagram of the system, the microcontroller is attached to the skateboard, the position of microcontroller has stayed constant throughout the project so that data collection was consistent. Attached to the microcontroller is an SD card module which is used to store the data recorded by the microcontroller during a session, the way in which the SD card module has been attached to the microcontroller will be discussed in detail in section 1.1.1.
+
+When the microcontroller is powered it waits for a connection to be made via Bluetooth, this connection is initiated by a mobile device with an application which can discover Bluetooth Low Energy (BLE) devices as these are not discoverable through either Android or iPhone standard Bluetooth discovery functions. 
+
+This may seem like an initial flaw to Bluetooth Low Energy but in fact it has been useful to the project. Firstly, BLE uses considerably less power than standard Bluetooth (insert quote with figure or percentage) which was great for the duty cycle of my microcontroller. I could only afford to attach a small power supply to the skateboard as not affecting the act of skating was something that I wanted to keep to minimum during the development of this project. Another perk to BLE is that once a connection has been made the device is no longer discoverable so it would stop any potential unwanted connection attempts if they were to occur.
+
+When a connection is made between the microcontroller and the mobile then the microcontroller will start recording the data taken from the accelerometer and gyroscope capturing it and storing it onto the SD card. 
+
+I chose to store the data in this way as BLE is not as consistent as I would like for transmitting data. As mentioned in the Analysis section a study carried out by Siekkinen et al they found that when testing successful packet transmissions, they only had a success rate of 60\% [1]. This would have been okay if I had the luxury of resending a piece of data if it came to light it wasn’t transmitted correctly but I need to store the data the instant that it is generate therefore using the SD card was the right decision. Standard Bluetooth would have probably overcome this problem but still wouldn’t have been perfect, as well as this it would consume way too much power for the microcontroller to have a long enough duty cycle.
+
+The microcontroller will then stop recording data once the user has disconnected the phone from the device. Doing this meant that the microcontroller won’t be constantly recording data and wasting space on the SD card.
+
+Once the data has been recorded you can then insert the SD card into a laptop and run it through the trick identification system. I created the trick identification based on graphs created from the initial data I collected when performing certain skateboard tricks. Using these graphs, I created rules that can be applied to the data set recorded on the SD card and if parts of the data meet certain rules then this means a certain trick has been performed. This will be discussed in more detail in section 2.3.
+
+
 \subsubsection{Position of Micro-controller on the Skateboard}\label{mcposition}
 
-\subsubsection{Arduino and the SD card module}\label{arduinoandsdcard}
+When first taking on the project I did not think that the position of the position of the microcontroller would be something that would take much thinking about. However, in fact it did take some planning as I had to two take two key factors into account:
+
+\begin{enumerate}
+\item Minimalism the effect on the act of skating with the microcontroller and power supply present.
+\item Reduce the chance of damage to the microcontroller and power supply.
+\end{enumerate}
+
+Below are 3 different approaches that I considered to try and protect the microcontroller:
+
+(Insert Figure of skateboard diagrams here)
+
+Suggestion 1 was my first proposal having the microcontroller towards the top on the side of skateboard just behind the front truck, trucks attach the skateboards wheels to its deck. However, after getting on the skateboard and riding it I noticed that when turning left and right the side of the skateboard is pushed towards the ground, a bit like how a motorcyclist’s knee does during a turn. This was causing the microcontroller to scrape along the floor while turning, this effected the riding of the skateboard as well putting the microcontroller at risk of being damaged. This could be prevented by putting the microcontroller into a metal case, which what eventually was done. However, the impact on the act of skating made this proposal of the position no good.
+
+Suggestion 2 saw the microcontroller and power supply go right in the middle of the skateboard in terms of both height and width. Due to the observation taken during testing suggestion 1 putting the microcontroller at the centre of the skateboard meant that during turning the microcontroller was no longer coming into contact with the ground. This made Suggestion 2 seem like a perfect solution however I then realised certain tricks performed on a skateboard known as ‘Grind’ tricks often have the centre of the skateboard grind across a ledge of some kind. Therefore, the microcontroller would be no good placed here. 
+
+This lead me to suggestion 3 in the above diagram. I knew that the microcontroller could not be placed at either side of the board but also couldn’t go right in the centre of the skateboard. I then decided that placing it just underneath the front truck of the skateboard would be safest place for the microcontroller to go without affect the use of the skateboard. After trying this out I was satisfied I had made the right choice with the truck at the back of the skateboard often used as part ‘Grind’ tricks – the same reason suggestion 2 was not possible.
+
+
+\subsubsection{Connecting the Arduino to the SD card module}\label{arduinoandsdcard}
+
+My initial plan at the start of the project was to send the data over Bluetooth and store it on an SD card via the mobile application. However, when it got around to the implementation I noticed that the recorded data was not as consistent as I would like and found that this is a problem with BLE as previously mentioned in section 1.1. 
+
+As a result, I had to purchase an SD card module that would be compatible with my Arduino 101 microcontroller. The process of wiring up the SD card module I purchased with the microcontroller was relatively simple, below is a schematic of the Arduino 101 and SD Card Module attached.
+
+(Insert Schemetic here)
+
+The this was implemented using a synchronous serial data protocol called the Serial Peripheral Interface (SPI) a protocol supported by the Arduino 101, when sourcing the SD Card module, I had to make sure it had the correct pins available for the lines used for this protocol, these are as follows:
+
+\underline Data Lines
+
+\begin{itemize}
+\item MISO (Master In Slave Out) – The line used for the slave (the SD card module) to sender data back to the master (The Arduino 101), this is never used in my implementation as I do require the SD card module to send any data or commands to the Arduino 101.
+\item MOSI (Master Out Slave In) – This line is used by the Arduino 101 to send the data taken from the accelerometer and gyroscope to SD card module to be saved ready to be run through the trick identification system.
+\item SCK (Serial Clock) – Keeps both the components in correct time to keep data transmission in sync.
+\item SS (Slave Select) – This pin can be used by the Arduino 101 to enable or disable the SD card module. 
+\end{itemize}
+
+\underline Power Lines
+
+\begin{itemize}
+\item 3.3V and GNR -  These lines give the SD card module 3.3V of power to be able to perform its required tasks. 
+\end{itemize}
+
+Once I knew the data and power lines I needed to implement this protocol I had to check which pins on the Arduino 101 board these needed to be connected to. Fortunately, Arduino provide a table explaining which pins should be used for the lines required for the SPI protocol. This table can be seen below [2]:
+
+(Insert Table)
+
+As you can see for the data lines MOSI uses digital pin 11, MISO uses digital pin 12, SCK uses digital pin 13 and SS line uses digital pin 10. The power lines use the pins on the board with matching names 3.3V and GNR to provide the SD card with power. 
+
+Through implementing this protocol, I was able to create a plain text file on the SD card module which is exactly what I need to store the data taken from the accelerometer and gyroscope of the Arduino 101 board. Now that this was done ready to design the rest of the software.
 
 \subsection{Arduino Software Design}\label{arduinosoftwaredesign}
 
+When it came down to creating the software required for the Arduino I would be writing be essentially writing my code in C/ C++ as “the Arduino language is merely a set of C/C++ functions that can be called from your code” [3] the Arduino IDE used to write the code in has a build process which takes care of things such as creating function prototypes. 
+
+My first software design decision was whether I was going to use the accelerometer readings on their own, the gyroscope readings on their own or a combination of both. To figure out the answer to this question I started looking at the libraries for the accelerometer and gyroscope to see how you extract the data from them. When doing so I discovered that there was library called Curie IMU which allowed me to compare both accelerometer and gyroscope readings together to a provide a single a combined reading using the readMotionSensor function of the Curie IMU library [4]. 
+
+It was possible to read both the gyroscope and accelerometer separately but decided to use the combined reading instead as it will give a better overall orientation of the board and the orientation of the board is essential to provide accurate data for the trick identification system. 
+
 \subsection{Mobile Application}\label{mobileapp}
 
-\subsection{Neural Net}\label{neural-net}
+\subsection{Trick Indentification}\label{trickidentification}
 
 \section{Implementation}\label{implementation}
 
@@ -24,7 +97,7 @@
 
 \subsection{Analysis of initial data to identify patterns of tricks}\label{initialdatacapture}
 
-\subsection{Create Neural Network}\label{createneuralnet}
+\subsection{Rule Based Model}\label{rulebasedmodels}
 
 \subsection{Bluetooth \& SD Card module implementation}\label{bluetoothsdcard}
 
